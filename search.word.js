@@ -1,13 +1,20 @@
+/*
+
+	@author		나상선
+	@date		2014, 12, 16
+	@version	0.1
+	@comment	일괄 삭제 및 사진 출력은 div 형태로 출력해야 될듯
+*/
+
 (function ($) {
 	$.stringSearch = function (obj, opt) {
-			var lastSearchWord = '';
 			/************************************************************************************************
 				원하는 값을 찾고 tab 키를 눌렀을때 주소 창으로 이동하는것 방지
 			*************************************************************************************************/
 			$(obj).bind( "keydown", function( event ) {
 				if ( event.keyCode === $.ui.keyCode.TAB && $( this ).autocomplete( "instance" ).menu.active ) {
 					event.preventDefault();
-				}
+				} 
 			});
 			
 			/************************************************************************************************
@@ -17,18 +24,20 @@
 				return val.split(optSplitWord);
 			}
 
-			var optUrl				= opt.dataUrl;					//검색할 url (json 리턴)
+			var optUrl			= opt.dataUrl;					//검색할 url (json 리턴)
+			var optdataMethod		= opt.dataMethod;				//쿼리 페이지로 넘어가는 값
 			var optSplitWord		= opt.splitWord;				
 			var optmentWord			= opt.mentWord;					// 실시간 검색을 사용하기 위한 첨자
-			var optShowPhoto		= opt.showPhoto;				// 사진 사용여부
+			//var optShowPhoto		= opt.showPhoto;				// 사진 사용여부
 			var optDelay			= opt.delay;					// 검색 딜레이
 			var optMultiSearch		= opt.multiSearch;				// 멀티서치 사용여부
-			var optMinLength		= opt.minLength + 1;			// 최소 검색 글자( @ 를 제외 시키기 위해 최소 글자에서 1 을 더한다.)
-			//var optTypingRestrict	= opt.typingRestrict;			// 타이핑 제한 시작은 무조건 @ 시작하기. 임의로 적기 불가능 
+			var optMinLength		= opt.minLength + 1;				// 최소 검색 글자( @ 를 제외 시키기 위해 최소 글자에서 1 을 더한다.)
+			//var optTypingRestrict	= opt.typingRestrict;					// 타이핑 제한 시작은 무조건 @ 시작하기. 임의로 적기 불가능 
 
 			console.log("셋팅 값 "+optUrl);
+			console.log("셋팅 값 "+optdataMethod);
 			console.log("셋팅 값 "+optSplitWord);
-			console.log("셋팅 값 "+optShowPhoto);
+			//console.log("셋팅 값 "+optShowPhoto);
 			console.log("셋팅 값 "+optDelay);
 			console.log("셋팅 값 "+optMultiSearch);
 			console.log("셋팅 값 "+optMinLength);
@@ -43,7 +52,6 @@
 				source: function ( request, response ) {
 					
 					
-					console.log(lastSearchWord);
 					var searchWord = '';										// 검색 글자 담아두기
 					var searchAva = false;										// 검색할것인지 여부
 					var atCheck = request.term.split(optSplitWord);				// 내용을 " " 으로 split
@@ -106,7 +114,8 @@
 							dataType: "json",
 							contentType: "application/json; charset=utf-8",
 								data: {
-									word: searchWord
+									word: searchWord,
+									method: optdataMethod
 								},
 								success: function( json ) {
 									response( json );
@@ -131,14 +140,13 @@
 						var terms = split(this.value);
 						console.log(this.value);
 						terms.pop();
-						terms.push( optmentWord + ui.item.label );
+						terms.push(ui.item.label );
 						terms.push( "" );
 						this.value = terms.join( optSplitWord );
 					} else {
 						/* 단일 검색 사용시 */
-						$(obj).val( optmentWord + ui.item.label );
+						$(obj).val(ui.item.label );
 					}
-					lastSearchWord = ui.item.label;
 					return false;
 				}
 			});
